@@ -49,7 +49,7 @@ capitales %>%
   mutate(code = tolower(ISO_A2)) %>% 
   left_join(df, by = c("code")) %>% 
   leaflet(width = 1000, height = 800) %>% 
-  addTiles() %>% 
+  addProviderTiles(providers$CartoDB.Positron) %>% 
   addCircleMarkers(radius = ~ log(nb_visits, base = 1.5), 
                    stroke = FALSE, 
                    color = "#FF8227",
