@@ -27,7 +27,8 @@ library(leaflet)
 library(rnaturalearth)
 library(sf)
 library(stringr)
-
+library(hrbrthemes)
+library(plotly)
 ```
 
 ```{r carte}
@@ -55,5 +56,26 @@ capitales %>%
                    fillOpacity = 0.6,
                    label = ~ paste0(SOV0NAME, " : ", nb_visits, " visites"))
 
+```
+
+```{r, fig.height=10}
+df %>% 
+  select(-id, -nb_actions, -code) %>% 
+  gather(visites, valeurs, nb_visits:nb_uniq_visitors) %>% 
+  arrange(desc(visites), desc(valeurs)) %>% 
+  group_by(visites) %>% 
+  slice(1:20) %>% 
+  arrange(valeurs) %>% 
+  ungroup() %>% 
+  mutate(pays = forcats::fct_inorder(pays)) %>% 
+  ggplot(aes(x = pays, y = valeurs)) +
+  geom_col(aes(fill = visites), position = "dodge") +
+#  geom_text(aes(label = valeurs)) +
+  scale_fill_manual(labels = c("visiteurs uniques", "visites"), name = "", values = c("#07B7D9", "#FF8227")) +
+  coord_flip() +
+  theme_ipsum(grid = "X") +
+  theme(legend.position = "bottom") +
+  labs(x = "", y  = "")
+  
 ```
 
