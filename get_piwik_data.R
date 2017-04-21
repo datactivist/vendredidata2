@@ -2,6 +2,9 @@ library(httr)
 library(purrr)
 library(tidyverse)
 
+source("./IDs.R", local = TRUE)
+
+
 getCountries <- function(idSite = 3,
                         period = "day",
                         date = "yesterday",
