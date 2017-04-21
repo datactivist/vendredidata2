@@ -1,0 +1,53 @@
+---
+title: ""
+output: html_document
+params:
+  revue: cybergeo.revues.org
+  date: yesterday
+---
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+```
+
+```{r, results='asis'}
+cat(paste0("Fréquentation de la revue ", params$revue))
+```
+
+
+```{r sources}
+
+source(file = "./get_piwik_data.R")
+library(httr)
+library(purrr)
+library(tidyverse)
+library(leaflet)
+library(rnaturalearth)
+library(sf)
+
+```
+
+```{r carte}
+
+
+# capitales <- ne_download(type = "populated_places", load = TRUE, returnclass = "sf", destdir = getwd())
+# save(capitales, file = "./capitales.Rdata")
+load("./capitales.Rdata")
+
+df <- getCountries(revue = params$revue, date = params$date)
+
+capitales %>% 
+  filter(FEATURECLA %in% "Admin-0 capital") %>% 
+  mutate(code = tolower(ISO_A2)) %>% 
+  left_join(df, by = c("code")) %>% 
+  leaflet() %>% 
+  addTiles() %>% 
+  addCircleMarkers(radius = ~ log(nb_visits, base = 1.5))
+  
+  
+  
+
+```
+
