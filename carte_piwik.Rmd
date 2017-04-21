@@ -26,6 +26,7 @@ library(tidyverse)
 library(leaflet)
 library(rnaturalearth)
 library(sf)
+library(stringr)
 
 ```
 
@@ -36,18 +37,23 @@ library(sf)
 # save(capitales, file = "./capitales.Rdata")
 load("./capitales.Rdata")
 
-df <- getCountries(revue = params$revue, date = params$date)
+df <- getCountries(revue = params$revue, date = params$date, idSite = case_when(str_detect(params$revue, "hypotheses.org") ~ 4,
+                                                                                str_detect(params$revue, "revues.org") ~ 3,
+                                                                                str_detect(params$revue, "books.openedition.org") ~ 5,
+                                                                                str_detect(params$revue, "calenda.org") ~ 6,
+                                                                                TRUE ~ 3))
 
 capitales %>% 
   filter(FEATURECLA %in% "Admin-0 capital") %>% 
   mutate(code = tolower(ISO_A2)) %>% 
   left_join(df, by = c("code")) %>% 
-  leaflet() %>% 
+  leaflet(width = 1000, height = 800) %>% 
   addTiles() %>% 
-  addCircleMarkers(radius = ~ log(nb_visits, base = 1.5))
-  
-  
-  
+  addCircleMarkers(radius = ~ log(nb_visits, base = 1.5), 
+                   stroke = FALSE, 
+                   color = "#FF8227",
+                   fillOpacity = 0.6,
+                   label = ~ paste0(SOV0NAME, " : ", nb_visits, " visites"))
 
 ```
 
