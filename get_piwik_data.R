@@ -41,14 +41,14 @@ getCountries <- function(idSite = 3,
                                x[["code"]],
                                0))
     }, .id = "id")
-})
+}
 
-getCountries(revue = "chs.revues.org")
+# getCountries(revue = "chs.revues.org")
 
-map_df(c("yesterday" = "yesterday", "today" = "today"),
-  function(date) {
-    map_df(c("cybergeo" = "cybergeo.revues.org", "vertigo" = "vertigo.revues.org"),
-       ~ getCountries(revue = ., date = date), .id = "revue")
-  }, .id = "date"
-)
+# map_df(c("yesterday" = "yesterday", "today" = "today"),
+#   function(date) {
+#     map_df(c("cybergeo" = "cybergeo.revues.org", "vertigo" = "vertigo.revues.org"),
+#        ~ getCountries(revue = ., date = date), .id = "revue")
+#   }, .id = "date"
+# )
 
